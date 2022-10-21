@@ -5,20 +5,21 @@ server:
 
 spring:
   datasource:
-    url: jdbc:h2:mem:test
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: 
-  h2:
-    console:
-      enabled: true
+    url: jdbc:mariadb://127.0.0.1:3306/greendb
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: green
+    password: green1234
   jpa:
     hibernate:
       ddl-auto: create
+    properties:
+      '[hibernate.format_sql]': true    
   output:
     ansi:
       enabled: always
 
 logging:
   level:
-    root: DEBUG
+    '[org.hibernate.SQL]': DEBUG
+    #root: DEBUG
+
