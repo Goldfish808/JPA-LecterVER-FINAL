@@ -10,8 +10,10 @@ spring:
     username: green
     password: green1234
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: none
+      
     properties:
       '[hibernate.format_sql]': true    
   output:
