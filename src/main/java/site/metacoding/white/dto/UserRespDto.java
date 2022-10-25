@@ -1,6 +1,5 @@
 package site.metacoding.white.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import site.metacoding.white.domain.User;

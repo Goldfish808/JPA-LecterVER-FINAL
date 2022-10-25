@@ -5,10 +5,13 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Repository // IoC 등록
 public class UserRepository {
@@ -18,9 +21,9 @@ public class UserRepository {
 
     public User save(User user) {
         // Persistence Context에 영속화 시키기 -> 자동 flush (트랜잭션 종료시)
-        System.out.println("ccc : " + user.getId()); // 영속화전
+        log.debug("디버그 : " + user.getId());
         em.persist(user);
-        System.out.println("ccc : " + user.getId()); // 영속화후 (DB와 동기화된다.)
+        log.debug("디버그 : " + user.getId());
         return user;
     }
 
