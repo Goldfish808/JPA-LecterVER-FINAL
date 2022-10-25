@@ -2,14 +2,12 @@ package site.metacoding.white.web;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import site.metacoding.white.domain.User;
 import site.metacoding.white.dto.ResponseDto;
 import site.metacoding.white.dto.SessionUser;
 import site.metacoding.white.dto.UserReqDto.JoinReqDto;
@@ -18,7 +16,7 @@ import site.metacoding.white.dto.UserRespDto.JoinRespDto;
 import site.metacoding.white.service.UserService;
 
 @RequiredArgsConstructor
-@RestController
+@Controller
 public class UserApiController {
 
     private final UserService userService;
