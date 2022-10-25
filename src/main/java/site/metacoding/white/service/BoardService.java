@@ -24,7 +24,7 @@ public class BoardService {
         Board board = new Board();
         board.setTitle(boardSaveReqDto.getTitle());
         board.setContent(boardSaveReqDto.getContent());
-        board.setUser(boardSaveReqDto.getUser());
+        board.setUser(boardSaveReqDto.getSessionUser().toEntity());
         boardRepository.save(board);
     }
 
