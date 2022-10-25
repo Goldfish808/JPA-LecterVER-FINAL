@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import site.metacoding.white.domain.Board;
 import site.metacoding.white.domain.BoardRepository;
+import site.metacoding.white.domain.User;
+import site.metacoding.white.domain.UserRepository;
 import site.metacoding.white.dto.BoardReqDto.BoardSaveReqDto;
 
 // 트랜잭션 관리
@@ -18,13 +20,15 @@ import site.metacoding.white.dto.BoardReqDto.BoardSaveReqDto;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public void save(BoardSaveReqDto boardSaveReqDto) {
+        User userPS = userRepository.findById(boardSaveReqDto.getSessionUser().getId());
         Board board = new Board();
         board.setTitle(boardSaveReqDto.getTitle());
         board.setContent(boardSaveReqDto.getContent());
-        board.setUser(boardSaveReqDto.getSessionUser().toEntity());
+        board.setUser(userPS);
         boardRepository.save(board);
     }
 

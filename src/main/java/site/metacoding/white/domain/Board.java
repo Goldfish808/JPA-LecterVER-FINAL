@@ -27,4 +27,5 @@ public class Board {
     // FK가 만들어짐. user_id
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
 }

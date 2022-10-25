@@ -2,10 +2,9 @@ package site.metacoding.white.web;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import site.metacoding.white.dto.ResponseDto;
@@ -16,7 +15,7 @@ import site.metacoding.white.dto.UserRespDto.JoinRespDto;
 import site.metacoding.white.service.UserService;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class UserApiController {
 
     private final UserService userService;
