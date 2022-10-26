@@ -3,22 +3,25 @@ package site.metacoding.white.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import site.metacoding.white.domain.Board;
 import site.metacoding.white.domain.BoardRepository;
 import site.metacoding.white.dto.BoardReqDto.BoardSaveReqDto;
+import site.metacoding.white.dto.BoardReqDto.BoardUpdateReqDto;
 import site.metacoding.white.dto.BoardRespDto.BoardAllRespDto;
 import site.metacoding.white.dto.BoardRespDto.BoardDetailRespDto;
 import site.metacoding.white.dto.BoardRespDto.BoardSaveRespDto;
+import site.metacoding.white.dto.BoardRespDto.BoardUpdateRespDto;
 
 // 트랜잭션 관리
 // DTO 변환해서 컨트롤러에게 돌려줘야함
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class BoardService {
@@ -49,10 +52,13 @@ public class BoardService {
     }
 
     @Transactional
-    public void update(Long id, Board board) {
+    public BoardUpdateRespDto update(BoardUpdateReqDto boardUpdateReqDto) {
+        Long id = boardUpdateReqDto.getId();
         Optional<Board> boardOP = boardRepository.findById(id);
         if (boardOP.isPresent()) {
-            boardOP.get().update(board.getTitle(), board.getContent());
+            Board boardPS = boardOP.get();
+            boardPS.update(boardUpdateReqDto.getTitle(), boardUpdateReqDto.getContent());
+            return new BoardUpdateRespDto(boardPS);
         } else {
             throw new RuntimeException("해당 " + id + "로 수정을 할 수 없습니다.");
         }
@@ -78,7 +84,13 @@ public class BoardService {
     // delete는 리턴 안함.
     @Transactional
     public void deleteById(Long id) {
-        boardRepository.deleteById(id);
+        Optional<Board> boardOP = boardRepository.findById(id);
+        if (boardOP.isPresent()) {
+            boardRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("해당 " + id + "로 삭제를 할 수 없습니다.");
+        }
+
     }
 
 }

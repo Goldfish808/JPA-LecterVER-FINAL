@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 import org.springframework.stereotype.Repository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Repository
 public class BoardRepository {
@@ -21,32 +24,17 @@ public class BoardRepository {
     }
 
     public Optional<Board> findById(Long id) {
-        // JPQL 문법
-        // Board boardPS = em.createQuery("select b from Board b where b.id = :id",
-        // Board.class)
-        // .setParameter("id", id)
-        // .getSingleResult();
+        try {
+            Optional<Board> boardOP = Optional.of(em
+                    .createQuery("select b from Board b where b.id = :id",
+                            Board.class)
+                    .setParameter("id", id)
+                    .getSingleResult());
+            return boardOP;
+        } catch (Exception e) {
+            return Optional.empty();
+        }
 
-        // Board boardPS = (Board) em
-        // .createNativeQuery("select * from board b inner join user u on b.user_id =
-        // u.id where b.id = :id",
-        // Board.class)
-        // .setParameter("id", id)
-        // .getSingleResult();
-
-        // Board boardPS = em
-        // .createQuery("select b from Board b join fetch b.user u where b.id = :id",
-        // Board.class)
-        // .setParameter("id", id)
-        // .getSingleResult();
-
-        Optional<Board> boardOP = Optional.ofNullable(em
-                .createQuery("select b from Board b where b.id = :id",
-                        Board.class)
-                .setParameter("id", id)
-                .getSingleResult());
-
-        return boardOP;
     }
 
     public List<Board> findAll() {
@@ -62,4 +50,22 @@ public class BoardRepository {
                 .executeUpdate();
     }
 
+    // JPQL 문법
+    // Board boardPS = em.createQuery("select b from Board b where b.id = :id",
+    // Board.class)
+    // .setParameter("id", id)
+    // .getSingleResult();
+
+    // Board boardPS = (Board) em
+    // .createNativeQuery("select * from board b inner join user u on b.user_id =
+    // u.id where b.id = :id",
+    // Board.class)
+    // .setParameter("id", id)
+    // .getSingleResult();
+
+    // Board boardPS = em
+    // .createQuery("select b from Board b join fetch b.user u where b.id = :id",
+    // Board.class)
+    // .setParameter("id", id)
+    // .getSingleResult();
 }

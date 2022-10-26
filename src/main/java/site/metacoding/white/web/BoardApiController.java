@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import site.metacoding.white.domain.Board;
 import site.metacoding.white.dto.BoardReqDto.BoardSaveReqDto;
+import site.metacoding.white.dto.BoardReqDto.BoardUpdateReqDto;
 import site.metacoding.white.dto.BoardRespDto.BoardSaveRespDto;
 import site.metacoding.white.dto.ResponseDto;
 import site.metacoding.white.dto.SessionUser;
@@ -45,15 +46,15 @@ public class BoardApiController {
     }
 
     @PutMapping("/board/{id}")
-    public String update(@PathVariable Long id, @RequestBody Board board) {
-        boardService.update(id, board);
-        return "ok";
+    public ResponseDto<?> update(@PathVariable Long id, @RequestBody BoardUpdateReqDto boardUpdateReqDto) {
+        boardUpdateReqDto.setId(id);
+        return new ResponseDto<>(1, "성공", boardService.update(boardUpdateReqDto));
     }
 
     @DeleteMapping("/board/{id}")
-    public String deleteById(@PathVariable Long id) {
+    public ResponseDto<?> deleteById(@PathVariable Long id) {
         boardService.deleteById(id);
-        return "ok";
+        return new ResponseDto<>(1, "성공", null);
     }
 
     // @GetMapping("/v2/board/{id}")

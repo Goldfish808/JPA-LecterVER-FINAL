@@ -70,7 +70,6 @@ public class BoardRespDto {
     public static class BoardAllRespDto {
         private Long id;
         private String title;
-        private String content;
         private UserDto user;
 
         @Setter
@@ -86,6 +85,31 @@ public class BoardRespDto {
         }
 
         public BoardAllRespDto(Board board) {
+            this.id = board.getId();
+            this.title = board.getTitle();
+            this.user = new UserDto(board.getUser());
+        }
+    }
+
+    @Setter
+    @Getter
+    public static class BoardUpdateRespDto {
+        private Long id;
+        private String title;
+        private String content;
+        private UserDto user;
+
+        @Setter
+        @Getter
+        public static class UserDto {
+            private Long id;
+
+            public UserDto(User user) {
+                this.id = user.getId();
+            }
+        }
+
+        public BoardUpdateRespDto(Board board) {
             this.id = board.getId();
             this.title = board.getTitle();
             this.content = board.getContent();
