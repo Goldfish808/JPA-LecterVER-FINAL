@@ -1,7 +1,5 @@
 package site.metacoding.white.web;
 
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,14 +33,15 @@ public class BoardApiController {
         return new ResponseDto<>(1, "성공", boardSaveRespDto);
     }
 
+    // 게시글 상세보기
     @GetMapping("/board/{id}")
-    public Board findById(@PathVariable Long id) {
-        return boardService.findById(id); // Entity -> JSON 변경 (MessageConverter)
+    public ResponseDto<?> findById(@PathVariable Long id) {
+        return new ResponseDto<>(1, "성공", boardService.findById(id));
     }
 
     @GetMapping("/board")
-    public List<Board> findAll() {
-        return boardService.findAll();
+    public ResponseDto<?> findAll() {
+        return new ResponseDto<>(1, "성공", boardService.findAll());
     }
 
     @PutMapping("/board/{id}")
@@ -57,16 +56,18 @@ public class BoardApiController {
         return "ok";
     }
 
-    @GetMapping("/v2/board/{id}")
-    public String findByIdV2(@PathVariable Long id) {
-        System.out.println("현재 open-in-view는 true 인가 false 인가 생각해보기!!");
-        Board boardPS = boardService.findById(id);
-        System.out.println("board.id : " + boardPS.getId());
-        System.out.println("board.title : " + boardPS.getTitle());
-        System.out.println("board.content : " + boardPS.getContent());
-        System.out.println("open-in-view가 false이면 Lazy 로딩 못함");
+    // @GetMapping("/v2/board/{id}")
+    // public String findByIdV2(@PathVariable Long id) {
+    // System.out.println("현재 open-in-view는 true 인가 false 인가 생각해보기!!");
+    // Board boardPS = boardService.findById(id);
+    // System.out.println("board.id : " + boardPS.getId());
+    // System.out.println("board.title : " + boardPS.getTitle());
+    // System.out.println("board.content : " + boardPS.getContent());
+    // System.out.println("board.user.username : " +
+    // boardPS.getUser().getUsername());
+    // System.out.println("open-in-view가 false이면 Lazy 로딩 못함");
 
-        // 날라감)
-        return "ok";
-    }
+    // // 날라감)
+    // return "ok";
+    // }
 }
