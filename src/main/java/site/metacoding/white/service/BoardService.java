@@ -43,6 +43,7 @@ public class BoardService {
     public BoardDetailRespDto findById(Long id) {
 
         Optional<Board> boardOP = boardRepository.findById(id);
+
         if (boardOP.isPresent()) {
             BoardDetailRespDto boardDetailRespDto = new BoardDetailRespDto(boardOP.get());
             return boardDetailRespDto;
