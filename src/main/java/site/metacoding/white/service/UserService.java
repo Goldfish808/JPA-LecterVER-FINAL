@@ -38,8 +38,10 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public SessionUser login(LoginReqDto loginReqDto) {
+
         String encPassword = sha256.encrypt(loginReqDto.getPassword());
         User userPS = userRepository.findByUsername(loginReqDto.getUsername());
+
         if (userPS.getPassword().equals(encPassword)) {
             return new SessionUser(userPS);
         } else {
