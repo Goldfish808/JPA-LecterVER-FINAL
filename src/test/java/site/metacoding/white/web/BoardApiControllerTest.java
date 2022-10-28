@@ -1,14 +1,11 @@
 package site.metacoding.white.web;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -28,6 +25,7 @@ import site.metacoding.white.domain.CommentRepository;
 import site.metacoding.white.domain.User;
 import site.metacoding.white.domain.UserRepository;
 import site.metacoding.white.dto.BoardReqDto.BoardSaveReqDto;
+import site.metacoding.white.dto.BoardReqDto.BoardUpdateReqDto;
 import site.metacoding.white.dto.SessionUser;
 import site.metacoding.white.util.SHA256;
 
@@ -35,8 +33,10 @@ import site.metacoding.white.util.SHA256;
 @Sql("classpath:truncate.sql")
 @Transactional // 트랜잭션 안붙이면 영속성 컨텍스트에서 DB로 flush 안됨 (Hibernate 사용시)
 @AutoConfigureMockMvc // MockMvc Ioc 컨테이너에 등록
-@SpringBootTest(webEnvironment = WebEnvironment.MOCK)
+@SpringBootTest(webEnvironment = WebEnvironment.MOCK) // 가짜 환경으로 실행
 public class BoardApiControllerTest {
+
+    private static final String APPLICATION_JSON = "application/json; charset=utf-8";
 
     @Autowired
     private MockMvc mvc;
@@ -58,14 +58,6 @@ public class BoardApiControllerTest {
 
     private MockHttpSession session;
 
-    private static HttpHeaders headers;
-
-    @BeforeAll
-    public static void init() {
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-    }
-
     @BeforeEach
     public void sessionInit() {
         session = new MockHttpSession();
@@ -86,28 +78,20 @@ public class BoardApiControllerTest {
                 .build();
         Board boardPS = boardRepository.save(board);
 
-        Comment comment = Comment.builder()
+        Comment comment1 = Comment.builder()
                 .content("내용좋아요")
                 .board(boardPS)
                 .user(userPS)
                 .build();
 
-        commentRepository.save(comment);
-    }
+        Comment comment2 = Comment.builder()
+                .content("내용싫어요")
+                .board(boardPS)
+                .user(userPS)
+                .build();
 
-    @Test
-    public void findById_test() throws Exception {
-        // given
-        Long id = 1L;
-
-        // when
-        ResultActions resultActions = mvc
-                .perform(MockMvcRequestBuilders.get("/board/" + id).accept("application/json; charset=utf-8"));
-
-        // then
-        MvcResult mvcResult = resultActions.andReturn();
-        System.out.println("디버그 : " + mvcResult.getResponse().getContentAsString());
-        resultActions.andExpect(MockMvcResultMatchers.status().isOk());
+        commentRepository.save(comment1);
+        commentRepository.save(comment2);
     }
 
     @Test
@@ -122,11 +106,85 @@ public class BoardApiControllerTest {
         // when
         ResultActions resultActions = mvc
                 .perform(MockMvcRequestBuilders.post("/board").content(body)
-                        .contentType("application/json; charset=utf-8").accept("application/json; charset=utf-8")
+                        .contentType(APPLICATION_JSON).accept(APPLICATION_JSON)
                         .session(session));
 
         // then
         MvcResult mvcResult = resultActions.andReturn();
         System.out.println("디버그 : " + mvcResult.getResponse().getContentAsString());
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.code").value(1L));
+    }
+
+    @Test
+    public void findById_test() throws Exception {
+        // given
+        Long id = 1L;
+
+        // when
+        ResultActions resultActions = mvc
+                .perform(MockMvcRequestBuilders.get("/board/" + id).accept(APPLICATION_JSON));
+
+        // then
+        MvcResult mvcResult = resultActions.andReturn();
+        System.out.println("디버그 : " + mvcResult.getResponse().getContentAsString());
+        resultActions.andExpect(MockMvcResultMatchers.status().isOk());
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value("스프링1강"));
+    }
+
+    @Test
+    public void findAll_test() throws Exception {
+        // given
+
+        // when
+        ResultActions resultActions = mvc
+                .perform(MockMvcRequestBuilders.get("/board").accept(APPLICATION_JSON));
+
+        // then
+        MvcResult mvcResult = resultActions.andReturn();
+        System.out.println("디버그 : " + mvcResult.getResponse().getContentAsString());
+        resultActions.andExpect(MockMvcResultMatchers.status().isOk());
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.code").value(1L));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.data.[0].title").value("스프링1강"));
+    }
+
+    @Test
+    public void update_test() throws Exception {
+        // given
+        Long id = 1L;
+        BoardUpdateReqDto boardUpdateReqDto = new BoardUpdateReqDto();
+        boardUpdateReqDto.setTitle("스프링2강");
+        boardUpdateReqDto.setContent("JUNIT공부");
+
+        String body = om.writeValueAsString(boardUpdateReqDto);
+
+        // when
+        ResultActions resultActions = mvc
+                .perform(MockMvcRequestBuilders.put("/board/" + id).content(body)
+                        .contentType(APPLICATION_JSON).accept(APPLICATION_JSON)
+                        .session(session));
+
+        // then
+        MvcResult mvcResult = resultActions.andReturn();
+        System.out.println("디버그 : " + mvcResult.getResponse().getContentAsString());
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.code").value(1L));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value("스프링2강"));
+    }
+
+    @Test
+    public void deleteById_test() throws Exception {
+        // given
+        Long id = 1L;
+
+        // when
+        ResultActions resultActions = mvc
+                .perform(MockMvcRequestBuilders.delete("/board/" + id)
+                        .accept(APPLICATION_JSON)
+                        .session(session));
+
+        // then
+        MvcResult mvcResult = resultActions.andReturn();
+        System.out.println("디버그 : " + mvcResult.getResponse().getContentAsString());
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.code").value(1L));
+
     }
 }
