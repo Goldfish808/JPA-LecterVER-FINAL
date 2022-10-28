@@ -2,12 +2,14 @@ package site.metacoding.white.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import site.metacoding.white.domain.Board;
 import site.metacoding.white.domain.Comment;
 import site.metacoding.white.domain.User;
 
 public class CommentRespDto {
 
+    @ToString
     @Setter
     @Getter
     public static class CommentSaveRespDto {
@@ -17,6 +19,7 @@ public class CommentRespDto {
         private UserDto user;
         private BoardDto board;
 
+        @ToString
         @Setter
         @Getter
         public static class UserDto {
@@ -29,6 +32,7 @@ public class CommentRespDto {
             }
         }
 
+        @ToString
         @Setter
         @Getter
         public static class BoardDto {

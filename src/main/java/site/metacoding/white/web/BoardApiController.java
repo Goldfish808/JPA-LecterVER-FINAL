@@ -27,6 +27,7 @@ public class BoardApiController {
 
     @PostMapping("/board")
     public ResponseDto<?> save(@RequestBody BoardSaveReqDto boardSaveReqDto) {
+
         SessionUser sessionUser = (SessionUser) session.getAttribute("sessionUser");
         if (sessionUser == null) {
             throw new RuntimeException("로그인이 필요합니다.");

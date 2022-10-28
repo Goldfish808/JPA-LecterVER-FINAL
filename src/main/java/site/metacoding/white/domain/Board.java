@@ -3,6 +3,7 @@ package site.metacoding.white.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.BatchSize;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -32,8 +35,13 @@ public class Board {
     private User user;
 
     // 조회를 위해서만 필요함
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+    }
 
     @Builder
     public Board(Long id, String title, String content, User user) {
