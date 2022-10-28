@@ -15,7 +15,6 @@ spring:
     console:
       enabled: true
   jpa:
-    defer-datasource-initialization: true
     open-in-view: false
     hibernate:
       ddl-auto: create
