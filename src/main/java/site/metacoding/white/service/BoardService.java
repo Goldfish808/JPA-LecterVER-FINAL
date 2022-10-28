@@ -86,6 +86,7 @@ public class BoardService {
     @Transactional
     public void deleteById(Long id) {
         Optional<Board> boardOP = boardRepository.findById(id);
+
         if (boardOP.isPresent()) {
             boardRepository.deleteById(id);
         } else {
