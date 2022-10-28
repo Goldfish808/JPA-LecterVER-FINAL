@@ -26,7 +26,7 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.CASCADE) // 양방향 매핑시 걸어준다.
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
 
