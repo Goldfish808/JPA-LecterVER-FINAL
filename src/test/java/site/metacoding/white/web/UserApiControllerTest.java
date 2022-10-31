@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.slf4j.Slf4j;
 import site.metacoding.white.domain.Board;
 import site.metacoding.white.domain.BoardRepository;
 import site.metacoding.white.domain.Comment;
@@ -30,6 +31,7 @@ import site.metacoding.white.dto.UserReqDto.JoinReqDto;
 import site.metacoding.white.dto.UserReqDto.LoginReqDto;
 import site.metacoding.white.util.SHA256;
 
+@Slf4j
 @ActiveProfiles("test")
 @Sql("classpath:truncate.sql")
 @Transactional // 트랜잭션 안붙이면 영속성 컨텍스트에서 DB로 flush 안됨 (Hibernate 사용시)
@@ -123,7 +125,7 @@ public class UserApiControllerTest {
         loginReqDto.setUsername("ssar"); // ssar 로 해야함.
         loginReqDto.setPassword("1234");
         String body = om.writeValueAsString(loginReqDto);
-
+        log.debug("디버그 : " + body);
         // when
         ResultActions resultActions = mvc
                 .perform(MockMvcRequestBuilders.post("/login").content(body)
