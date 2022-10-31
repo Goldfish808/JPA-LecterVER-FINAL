@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import site.metacoding.white.config.auth.JwtAuthenticationFilter;
+import site.metacoding.white.config.auth.JwtAuthorizationFilter;
 import site.metacoding.white.domain.UserRepository;
 
 @Slf4j
@@ -23,6 +24,17 @@ public class FilterConfig {
         FilterRegistrationBean<JwtAuthenticationFilter> bean = new FilterRegistrationBean<>(
                 new JwtAuthenticationFilter(userRepository));
         bean.addUrlPatterns("/login");
+        bean.setOrder(1); // 낮은 순서대로 실행
+        return bean;
+    }
+
+    @Bean
+    public FilterRegistrationBean<JwtAuthorizationFilter> jwtAuthorizationFilterRegister() {
+        log.debug("디버그 : 인가 필터 등록");
+        FilterRegistrationBean<JwtAuthorizationFilter> bean = new FilterRegistrationBean<>(
+                new JwtAuthorizationFilter());
+        bean.addUrlPatterns("/s/*"); // 원래 두개인데, 이 친구만 예외
+        bean.setOrder(2);
         return bean;
     }
 

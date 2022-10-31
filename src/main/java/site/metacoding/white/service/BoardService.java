@@ -84,11 +84,18 @@ public class BoardService {
 
     // delete는 리턴 안함.
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteById(Long id, Long userId) {
         Optional<Board> boardOP = boardRepository.findById(id);
-
+        log.debug("보드서비스 : 1");
         if (boardOP.isPresent()) {
+            Board boardPS = boardOP.get();
+            log.debug("보드서비스 : 2");
+            if (boardPS.getUser().getId() != userId) {
+                throw new RuntimeException("해당 게시글을 삭제할 권한이 없습니다.");
+            }
+            log.debug("보드서비스 : 3");
             boardRepository.deleteById(id);
+            log.debug("보드서비스 : 4");
         } else {
             throw new RuntimeException("해당 " + id + "로 삭제를 할 수 없습니다.");
         }
