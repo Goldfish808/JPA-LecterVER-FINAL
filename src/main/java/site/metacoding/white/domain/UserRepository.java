@@ -21,9 +21,7 @@ public class UserRepository {
 
     public User save(User user) {
         // Persistence Context에 영속화 시키기 -> 자동 flush (트랜잭션 종료시)
-        log.debug("디버그 : " + user.getId());
         em.persist(user);
-        log.debug("디버그 : " + user.getId());
         return user;
     }
 
