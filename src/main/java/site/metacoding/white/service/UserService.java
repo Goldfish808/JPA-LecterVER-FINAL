@@ -1,5 +1,7 @@
 package site.metacoding.white.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,15 +40,18 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public SessionUser login(LoginReqDto loginReqDto) {
-
         String encPassword = sha256.encrypt(loginReqDto.getPassword());
-        User userPS = userRepository.findByUsername(loginReqDto.getUsername());
-
-        if (userPS.getPassword().equals(encPassword)) {
-            return new SessionUser(userPS);
-        } else {
+        Optional<User> userOP = userRepository.findByUsername(loginReqDto.getUsername());
+        if (userOP.isEmpty()) {
             throw new RuntimeException("아이디 혹은 패스워드가 잘못 입력되었습니다.");
         }
+
+        User userPS = userOP.get();
+        if (!userPS.getPassword().equals(encPassword)) {
+            throw new RuntimeException("아이디 혹은 패스워드가 잘못 입력되었습니다.");
+        }
+
+        return new SessionUser(userPS);
     } // 트랜잭션 종료
 
 }
